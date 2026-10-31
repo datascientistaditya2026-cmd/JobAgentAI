@@ -1,0 +1,678 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>My AI Profile | JobAgent AI</title>
+
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        rel="stylesheet">
+
+
+    <style>
+
+        body {
+            background: #f5f7fb;
+            font-family: Arial, sans-serif;
+        }
+
+        .navbar-brand {
+            font-weight: 700;
+        }
+
+        .profile-container {
+            max-width: 1100px;
+            margin: 35px auto;
+        }
+
+        .card {
+            border: none;
+            border-radius: 16px;
+            box-shadow: 0 6px 25px rgba(0, 0, 0, 0.07);
+        }
+
+        .profile-header {
+            background: white;
+            border-radius: 16px;
+            padding: 30px;
+            margin-bottom: 25px;
+        }
+
+        .avatar {
+            width: 75px;
+            height: 75px;
+            border-radius: 50%;
+            background: #eaf2ff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            font-weight: bold;
+            color: #0d6efd;
+        }
+
+        .section-title {
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            font-weight: 600;
+        }
+
+        .form-control,
+        .form-select {
+            border-radius: 10px;
+            min-height: 46px;
+        }
+
+        textarea.form-control {
+            min-height: 100px;
+        }
+
+        .ai-box {
+            background: #eef6ff;
+            border: 1px solid #cfe2ff;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 25px;
+        }
+
+        .ai-box h5 {
+            font-weight: 700;
+        }
+
+        .profile-tip {
+            background: #fff8e6;
+            border: 1px solid #ffe69c;
+            border-radius: 12px;
+            padding: 18px;
+        }
+
+        .save-button {
+            border-radius: 10px;
+            padding: 12px 30px;
+            font-weight: 600;
+        }
+
+        .sidebar-card {
+            position: sticky;
+            top: 20px;
+        }
+
+        .quick-link {
+            display: block;
+            text-decoration: none;
+            color: #212529;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 5px;
+        }
+
+        .quick-link:hover {
+            background: #f1f3f5;
+        }
+
+        .required-note {
+            font-size: 13px;
+            color: #6c757d;
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<!-- NAVBAR -->
+
+<nav class="navbar navbar-dark bg-dark">
+
+    <div class="container">
+
+        <a
+            href="{% url 'dashboard' %}"
+            class="navbar-brand">
+
+            🤖 JobAgent AI
+
+        </a>
+
+
+        <div class="d-flex gap-2">
+
+            <a
+                href="{% url 'dashboard' %}"
+                class="btn btn-outline-light btn-sm">
+
+                Dashboard
+
+            </a>
+
+
+            <a
+                href="{% url 'resume_list' %}"
+                class="btn btn-outline-light btn-sm">
+
+                Resumes
+
+            </a>
+
+
+            <a
+                href="{% url 'logout' %}"
+                class="btn btn-danger btn-sm">
+
+                Logout
+
+            </a>
+
+        </div>
+
+    </div>
+
+</nav>
+
+
+
+<!-- MAIN -->
+
+<div class="container">
+
+    <div class="profile-container">
+
+
+        <!-- PROFILE HEADER -->
+
+        <div class="profile-header">
+
+            <div class="d-flex align-items-center">
+
+                <div class="avatar me-3">
+
+                    {% if profile.full_name %}
+
+                        {{ profile.full_name|first|upper }}
+
+                    {% else %}
+
+                        {{ request.user.username|first|upper }}
+
+                    {% endif %}
+
+                </div>
+
+
+                <div>
+
+                    <h2 class="mb-1">
+
+                        {{ profile.full_name|default:request.user.username }}
+
+                    </h2>
+
+                    <p class="text-muted mb-0">
+
+                        {{ request.user.email }}
+
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+
+        <div class="row">
+
+
+            <!-- MAIN PROFILE FORM -->
+
+            <div class="col-lg-8">
+
+
+                <div class="card">
+
+                    <div class="card-body p-4">
+
+
+                        <div class="d-flex justify-content-between align-items-center">
+
+                            <div>
+
+                                <h4 class="section-title mb-1">
+
+                                    👤 Professional Profile
+
+                                </h4>
+
+                                <p class="text-muted">
+
+                                    This information will be used
+                                    by the AI Job Matching Agent.
+
+                                </p>
+
+                            </div>
+
+                        </div>
+
+
+
+                        <!-- AI INFO -->
+
+                        <div class="ai-box">
+
+                            <h5>
+                                🤖 AI Profile
+                            </h5>
+
+                            <p class="mb-0">
+
+                                Your uploaded resume can automatically
+                                populate these fields. You can review
+                                and edit the information before saving.
+
+                            </p>
+
+                        </div>
+
+
+
+                        <!-- MESSAGES -->
+
+                        {% if messages %}
+
+                            {% for message in messages %}
+
+                                <div
+                                    class="alert alert-success alert-dismissible fade show">
+
+                                    {{ message }}
+
+                                    <button
+                                        type="button"
+                                        class="btn-close"
+                                        data-bs-dismiss="alert">
+                                    </button>
+
+                                </div>
+
+                            {% endfor %}
+
+                        {% endif %}
+
+
+
+                        <!-- FORM -->
+
+                        <form method="POST">
+
+                            {% csrf_token %}
+
+
+                            <div class="row">
+
+
+                                <!-- FULL NAME -->
+
+                                <div class="col-md-6 mb-3">
+
+                                    <label
+                                        class="form-label"
+                                        for="{{ form.full_name.id_for_label }}">
+
+                                        Full Name
+
+                                    </label>
+
+                                    {{ form.full_name }}
+
+                                    {% if form.full_name.errors %}
+
+                                        <div class="text-danger">
+                                            {{ form.full_name.errors }}
+                                        </div>
+
+                                    {% endif %}
+
+                                </div>
+
+
+
+                                <!-- PHONE -->
+
+                                <div class="col-md-6 mb-3">
+
+                                    <label
+                                        class="form-label"
+                                        for="{{ form.phone.id_for_label }}">
+
+                                        Phone Number
+
+                                    </label>
+
+                                    {{ form.phone }}
+
+                                    {% if form.phone.errors %}
+
+                                        <div class="text-danger">
+                                            {{ form.phone.errors }}
+                                        </div>
+
+                                    {% endif %}
+
+                                </div>
+
+
+
+                                <!-- LOCATION -->
+
+                                <div class="col-md-6 mb-3">
+
+                                    <label
+                                        class="form-label"
+                                        for="{{ form.location.id_for_label }}">
+
+                                        Current Location
+
+                                    </label>
+
+                                    {{ form.location }}
+
+                                </div>
+
+
+
+                                <!-- SALARY -->
+
+                                <div class="col-md-6 mb-3">
+
+                                    <label
+                                        class="form-label"
+                                        for="{{ form.expected_salary.id_for_label }}">
+
+                                        Expected Salary
+
+                                    </label>
+
+                                    {{ form.expected_salary }}
+
+                                </div>
+
+
+
+                                <!-- PREFERRED ROLES -->
+
+                                <div class="col-12 mb-3">
+
+                                    <label
+                                        class="form-label"
+                                        for="{{ form.preferred_roles.id_for_label }}">
+
+                                        🎯 Preferred Job Roles
+
+                                    </label>
+
+                                    {{ form.preferred_roles }}
+
+                                    <div class="required-note mt-1">
+
+                                        Example:
+                                        Python Developer,
+                                        AI Engineer,
+                                        Data Scientist
+
+                                    </div>
+
+                                </div>
+
+
+
+                                <!-- PREFERRED LOCATIONS -->
+
+                                <div class="col-12 mb-3">
+
+                                    <label
+                                        class="form-label"
+                                        for="{{ form.preferred_locations.id_for_label }}">
+
+                                        📍 Preferred Job Locations
+
+                                    </label>
+
+                                    {{ form.preferred_locations }}
+
+                                    <div class="required-note mt-1">
+
+                                        Example:
+                                        Bangalore, Chennai, Hyderabad,
+                                        Remote
+
+                                    </div>
+
+                                </div>
+
+
+
+                                <!-- SKILLS -->
+
+                                <div class="col-12 mb-3">
+
+                                    <label
+                                        class="form-label"
+                                        for="{{ form.skills.id_for_label }}">
+
+                                        🛠️ Skills
+
+                                    </label>
+
+                                    {{ form.skills }}
+
+                                    <div class="required-note mt-1">
+
+                                        Example:
+                                        Python, Django, FastAPI,
+                                        SQL, Machine Learning, Docker
+
+                                    </div>
+
+                                </div>
+
+
+
+                                <!-- EDUCATION -->
+
+                                <div class="col-12 mb-3">
+
+                                    <label
+                                        class="form-label"
+                                        for="{{ form.education.id_for_label }}">
+
+                                        🎓 Education
+
+                                    </label>
+
+                                    {{ form.education }}
+
+                                </div>
+
+
+
+                                <!-- EXPERIENCE -->
+
+                                <div class="col-12 mb-3">
+
+                                    <label
+                                        class="form-label"
+                                        for="{{ form.experience.id_for_label }}">
+
+                                        💼 Experience
+
+                                    </label>
+
+                                    {{ form.experience }}
+
+                                </div>
+
+
+
+                                <!-- REMOTE PREFERENCE -->
+
+                                <div class="col-md-6 mb-3">
+
+                                    <label
+                                        class="form-label"
+                                        for="{{ form.remote_preference.id_for_label }}">
+
+                                        Work Preference
+
+                                    </label>
+
+                                    {{ form.remote_preference }}
+
+                                </div>
+
+
+
+                                <!-- BIO -->
+
+                                <div class="col-12 mb-4">
+
+                                    <label
+                                        class="form-label"
+                                        for="{{ form.bio.id_for_label }}">
+
+                                        About You
+
+                                    </label>
+
+                                    {{ form.bio }}
+
+                                </div>
+
+
+                            </div>
+
+
+
+                            <!-- SAVE -->
+
+                            <button
+                                type="submit"
+                                class="btn btn-primary save-button">
+
+                                💾 Save Profile
+
+                            </button>
+
+
+                        </form>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- SIDEBAR -->
+
+            <div class="col-lg-4 mt-4 mt-lg-0">
+
+
+                <div class="card sidebar-card">
+
+                    <div class="card-body p-4">
+
+
+                        <h5 class="fw-bold mb-3">
+
+                            ⚡ Quick Actions
+
+                        </h5>
+
+
+                        <a
+                            href="{% url 'resume_list' %}"
+                            class="quick-link">
+
+                            📄 My Resumes
+
+                        </a>
+
+
+                        <a
+                            href="{% url 'resume_upload' %}"
+                            class="quick-link">
+
+                            ⬆️ Upload New Resume
+
+                        </a>
+
+
+                        <a
+                            href="{% url 'dashboard' %}"
+                            class="quick-link">
+
+                            🏠 Dashboard
+
+                        </a>
+
+
+                        <hr>
+
+
+                        <div class="profile-tip">
+
+                            <strong>
+                                💡 Improve Your Profile
+                            </strong>
+
+                            <p class="small mb-0 mt-2">
+
+                                A detailed profile helps the AI agent
+                                find jobs that better match your skills,
+                                experience, location and career goals.
+
+                            </p>
+
+                        </div>
+
+
+                    </div>
+
+                </div>
+
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+
+<script
+    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js">
+</script>
+
+
+</body>
+
+</html>
+```

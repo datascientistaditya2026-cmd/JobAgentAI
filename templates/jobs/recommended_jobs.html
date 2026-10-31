@@ -1,0 +1,775 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Recommended Jobs - JobAgentAI</title>
+
+    <style>
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background: #f4f6f9;
+            color: #1f2937;
+        }
+
+        /* =========================
+           SIDEBAR
+        ========================= */
+
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 250px;
+            height: 100vh;
+            background: #111827;
+            color: white;
+            padding: 25px 18px;
+            z-index: 1000;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 35px;
+            text-align: center;
+        }
+
+        .logo span {
+            color: #60a5fa;
+        }
+
+        .nav-links {
+            list-style: none;
+        }
+
+        .nav-links li {
+            margin-bottom: 8px;
+        }
+
+        .nav-links a {
+            display: block;
+            padding: 13px 15px;
+            color: #d1d5db;
+            text-decoration: none;
+            border-radius: 8px;
+            transition: 0.2s;
+        }
+
+        .nav-links a:hover,
+        .nav-links a.active {
+            background: #2563eb;
+            color: white;
+        }
+
+        /* =========================
+           MAIN CONTENT
+        ========================= */
+
+        .main-content {
+            margin-left: 250px;
+            min-height: 100vh;
+        }
+
+        /* =========================
+           TOPBAR
+        ========================= */
+
+        .topbar {
+            height: 75px;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 35px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .topbar h2 {
+            font-size: 22px;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #2563eb;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        /* =========================
+           CONTAINER
+        ========================= */
+
+        .container {
+            padding: 35px;
+            max-width: 1400px;
+            margin: auto;
+        }
+
+        .page-header {
+            margin-bottom: 30px;
+        }
+
+        .page-header h1 {
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+
+        .page-header p {
+            color: #6b7280;
+            font-size: 16px;
+        }
+
+        /* =========================
+           JOB LIST
+        ========================= */
+
+        .job-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(420px, 1fr));
+            gap: 22px;
+        }
+
+        .job-card {
+            background: white;
+            border-radius: 14px;
+            padding: 25px;
+            border: 1px solid #e5e7eb;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .job-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        /* =========================
+           JOB HEADER
+        ========================= */
+
+        .job-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .job-header h2 {
+            font-size: 21px;
+            margin-bottom: 8px;
+            color: #111827;
+        }
+
+        .job-header h3 {
+            font-size: 15px;
+            color: #6b7280;
+            font-weight: normal;
+        }
+
+        /* =========================
+           MATCH SCORE
+        ========================= */
+
+        .match-score {
+            min-width: 75px;
+            height: 75px;
+            border-radius: 50%;
+            background: #2563eb;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+
+        .match-score span {
+            font-size: 10px;
+            font-weight: normal;
+            margin-top: 2px;
+        }
+
+        /* =========================
+           JOB INFO
+        ========================= */
+
+        .job-info {
+            border-top: 1px solid #e5e7eb;
+            border-bottom: 1px solid #e5e7eb;
+            padding: 15px 0;
+            margin-bottom: 18px;
+        }
+
+        .job-info p {
+            margin-bottom: 8px;
+            color: #4b5563;
+            font-size: 14px;
+        }
+
+        .job-info p:last-child {
+            margin-bottom: 0;
+        }
+
+        /* =========================
+           MATCH DETAILS
+        ========================= */
+
+        .match-details {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-bottom: 22px;
+        }
+
+        .match-details div {
+            background: #f8fafc;
+            border: 1px solid #e5e7eb;
+            padding: 12px;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .match-details strong {
+            font-size: 13px;
+            color: #4b5563;
+        }
+
+        .match-details span {
+            font-weight: bold;
+            color: #2563eb;
+        }
+
+        /* =========================
+           ACTION BUTTONS
+        ========================= */
+
+        .job-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .job-actions a {
+            text-decoration: none;
+            padding: 10px 16px;
+            border-radius: 7px;
+            font-size: 14px;
+            font-weight: 600;
+            transition: 0.2s;
+        }
+
+        .job-actions a:first-child {
+            background: #2563eb;
+            color: white;
+        }
+
+        .job-actions a:first-child:hover {
+            background: #1d4ed8;
+        }
+
+        .job-actions a:last-child {
+            background: #e5e7eb;
+            color: #374151;
+        }
+
+        .job-actions a:last-child:hover {
+            background: #d1d5db;
+        }
+
+        /* =========================
+           EMPTY STATE
+        ========================= */
+
+        .empty-state {
+            background: white;
+            border-radius: 14px;
+            padding: 60px 30px;
+            text-align: center;
+            border: 1px solid #e5e7eb;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+
+        .empty-state h2 {
+            margin-bottom: 12px;
+            font-size: 24px;
+        }
+
+        .empty-state p {
+            color: #6b7280;
+            margin-bottom: 25px;
+        }
+
+        .empty-state a {
+            display: inline-block;
+            background: #2563eb;
+            color: white;
+            text-decoration: none;
+            padding: 12px 20px;
+            border-radius: 7px;
+            font-weight: 600;
+        }
+
+        .empty-state a:hover {
+            background: #1d4ed8;
+        }
+
+        /* =========================
+           MOBILE
+        ========================= */
+
+        .menu-button {
+            display: none;
+            border: none;
+            background: #111827;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 18px;
+        }
+
+        @media (max-width: 900px) {
+
+            .sidebar {
+                transform: translateX(-100%);
+                transition: 0.3s;
+            }
+
+            .sidebar.show {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+
+            .menu-button {
+                display: block;
+            }
+
+            .topbar {
+                padding: 0 20px;
+            }
+
+            .container {
+                padding: 25px 20px;
+            }
+
+            .job-list {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 600px) {
+
+            .topbar h2 {
+                display: none;
+            }
+
+            .page-header h1 {
+                font-size: 25px;
+            }
+
+            .job-header {
+                flex-direction: column;
+            }
+
+            .match-score {
+                width: 70px;
+                height: 70px;
+            }
+
+            .match-details {
+                grid-template-columns: 1fr;
+            }
+
+            .job-actions {
+                flex-direction: column;
+            }
+
+            .job-actions a {
+                text-align: center;
+            }
+        }
+
+    </style>
+</head>
+
+<body>
+
+    <!-- =========================
+         SIDEBAR
+    ========================= -->
+
+    <aside class="sidebar" id="sidebar">
+
+        <div class="logo">
+            🤖 Job<span>AgentAI</span>
+        </div>
+
+        <ul class="nav-links">
+
+            <li>
+                <a href="{% url 'dashboard' %}">
+                    🏠 Dashboard
+                </a>
+            </li>
+
+            <li>
+                <a href="{% url 'job_list' %}">
+                    💼 All Jobs
+                </a>
+            </li>
+
+            <li>
+                <a href="{% url 'recommended_jobs' %}" class="active">
+                    ⭐ Recommended Jobs
+                </a>
+            </li>
+
+            <li>
+                <a href="{% url 'profile' %}">
+                    👤 My Profile
+                </a>
+            </li>
+
+            <li>
+                <a href="{% url 'resume_list' %}">
+                    📄 My Resumes
+                </a>
+            </li>
+
+            {% if applications_url %}
+            <li>
+                <a href="{{ applications_url }}">
+                    📋 Applications
+                </a>
+            </li>
+            {% endif %}
+
+            <li>
+                <a href="{% url 'logout' %}">
+                    🚪 Logout
+                </a>
+            </li>
+
+        </ul>
+
+    </aside>
+
+
+    <!-- =========================
+         MAIN CONTENT
+    ========================= -->
+
+    <main class="main-content">
+
+        <!-- TOPBAR -->
+
+        <header class="topbar">
+
+            <div style="display: flex; align-items: center; gap: 15px;">
+
+                <button
+                    class="menu-button"
+                    onclick="toggleSidebar()"
+                >
+                    ☰
+                </button>
+
+                <h2>
+                    Recommended Jobs
+                </h2>
+
+            </div>
+
+
+            <div class="user-info">
+
+                <span>
+                    {{ request.user.username }}
+                </span>
+
+                <div class="avatar">
+
+                    {{ request.user.username|first|upper }}
+
+                </div>
+
+            </div>
+
+        </header>
+
+
+        <!-- PAGE -->
+
+        <div class="container">
+
+            <div class="page-header">
+
+                <h1>
+                    🤖 Recommended Jobs
+                </h1>
+
+                <p>
+                    Jobs ranked according to your profile,
+                    skills, experience and location preferences.
+                </p>
+
+            </div>
+
+
+            {% if recommendations %}
+
+                <div class="job-list">
+
+                    {% for match in recommendations %}
+
+                        <div class="job-card">
+
+                            <div class="job-header">
+
+                                <div>
+
+                                    <h2>
+                                        {{ match.job.title }}
+                                    </h2>
+
+                                    <h3>
+                                        {{ match.job.company_name }}
+                                    </h3>
+
+                                </div>
+
+
+                                <div class="match-score">
+
+                                    {{ match.overall_score|floatformat:0 }}%
+
+                                    <span>
+                                        Match
+                                    </span>
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="job-info">
+
+                                <p>
+                                    📍
+                                    {{ match.job.location|default:"Not specified" }}
+                                </p>
+
+                                <p>
+                                    💼
+                                    {{ match.job.get_job_type_display }}
+                                </p>
+
+                                {% if match.job.salary %}
+
+                                    <p>
+                                        💰
+                                        {{ match.job.salary }}
+                                    </p>
+
+                                {% endif %}
+
+                                {% if match.job.source %}
+
+                                    <p>
+                                        🔎
+                                        Source: {{ match.job.source }}
+                                    </p>
+
+                                {% endif %}
+
+                            </div>
+
+
+                            <div class="match-details">
+
+                                <div>
+                                    <strong>
+                                        Skills
+                                    </strong>
+
+                                    <span>
+                                        {{ match.skills_score|floatformat:0 }}%
+                                    </span>
+                                </div>
+
+
+                                <div>
+                                    <strong>
+                                        Experience
+                                    </strong>
+
+                                    <span>
+                                        {{ match.experience_score|floatformat:0 }}%
+                                    </span>
+                                </div>
+
+
+                                <div>
+                                    <strong>
+                                        Education
+                                    </strong>
+
+                                    <span>
+                                        {{ match.education_score|floatformat:0 }}%
+                                    </span>
+                                </div>
+
+
+                                <div>
+                                    <strong>
+                                        Location
+                                    </strong>
+
+                                    <span>
+                                        {{ match.location_score|floatformat:0 }}%
+                                    </span>
+                                </div>
+
+                            </div>
+
+
+                            {% if match.explanation %}
+
+                                <div style="
+                                    background:#eff6ff;
+                                    border-left:4px solid #2563eb;
+                                    padding:14px;
+                                    border-radius:6px;
+                                    margin-bottom:20px;
+                                ">
+
+                                    <strong>
+                                        🤖 AI Explanation
+                                    </strong>
+
+                                    <p style="
+                                        margin-top:7px;
+                                        color:#4b5563;
+                                        line-height:1.6;
+                                    ">
+                                        {{ match.explanation }}
+                                    </p>
+
+                                </div>
+
+                            {% endif %}
+
+
+                            <div class="job-actions">
+
+                                <a
+                                    href="{% url 'job_detail' match.job.id %}"
+                                >
+                                    View Job
+                                </a>
+
+
+                                {% if match.job.source_url %}
+
+                                    <a
+                                        href="{{ match.job.source_url }}"
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                    >
+                                        Original Job ↗
+                                    </a>
+
+                                {% endif %}
+
+                            </div>
+
+                        </div>
+
+                    {% endfor %}
+
+                </div>
+
+
+            {% else %}
+
+                <div class="empty-state">
+
+                    <h2>
+                        No recommendations available
+                    </h2>
+
+                    <p>
+                        Add your skills, preferred roles and
+                        location to your profile first.
+                    </p>
+
+                    <a href="{% url 'profile' %}">
+                        Update Profile
+                    </a>
+
+                    <a
+                        href="{{ naukri_search_url }}"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                    >
+                        Search matching jobs on Naukri ↗
+                    </a>
+
+                </div>
+
+            {% endif %}
+
+        </div>
+
+    </main>
+
+
+    <!-- =========================
+         JAVASCRIPT
+    ========================= -->
+
+    <script>
+
+        function toggleSidebar() {
+
+            const sidebar =
+                document.getElementById("sidebar");
+
+            sidebar.classList.toggle("show");
+
+        }
+
+    </script>
+
+</body>
+
+</html>

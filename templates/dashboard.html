@@ -1,0 +1,2239 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        JobAgentAI - Dashboard
+    </title>
+
+
+    <style>
+
+        /* =====================================================
+           RESET
+        ===================================================== */
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+
+        body {
+            font-family:
+                Arial,
+                Helvetica,
+                sans-serif;
+
+            background: #f4f6f9;
+
+            color: #111827;
+
+            min-height: 100vh;
+        }
+
+
+        a {
+            text-decoration: none;
+        }
+
+
+        button,
+        input {
+            font-family: inherit;
+        }
+
+
+        /* =====================================================
+           SIDEBAR
+        ===================================================== */
+
+        .sidebar {
+
+            position: fixed;
+
+            left: 0;
+            top: 0;
+
+            width: 250px;
+
+            height: 100vh;
+
+            background: #111827;
+
+            color: white;
+
+            padding: 25px 18px;
+
+            z-index: 1000;
+
+            transition: 0.3s ease;
+
+            overflow-y: auto;
+        }
+
+
+        .logo {
+
+            text-align: center;
+
+            font-size: 24px;
+
+            font-weight: 700;
+
+            margin-bottom: 35px;
+        }
+
+
+        .logo span {
+            color: #60a5fa;
+        }
+
+
+        .nav-links {
+
+            list-style: none;
+        }
+
+
+        .nav-links li {
+
+            margin-bottom: 7px;
+        }
+
+
+        .nav-links a {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 10px;
+
+            padding: 13px 15px;
+
+            color: #d1d5db;
+
+            border-radius: 8px;
+
+            font-size: 14px;
+
+            transition: 0.2s;
+        }
+
+
+        .nav-links a:hover {
+
+            background: #1f2937;
+
+            color: white;
+        }
+
+
+        .nav-links a.active {
+
+            background: #2563eb;
+
+            color: white;
+        }
+
+
+        .sidebar-divider {
+
+            height: 1px;
+
+            background: #374151;
+
+            margin: 20px 0;
+        }
+
+
+        /* =====================================================
+           MAIN CONTENT
+        ===================================================== */
+
+        .main-content {
+
+            margin-left: 250px;
+
+            min-height: 100vh;
+
+            transition: 0.3s ease;
+        }
+
+
+        /* =====================================================
+           TOPBAR
+        ===================================================== */
+
+        .topbar {
+
+            height: 75px;
+
+            background: white;
+
+            border-bottom: 1px solid #e5e7eb;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            padding: 0 35px;
+        }
+
+
+        .topbar-left {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 15px;
+        }
+
+
+        .topbar-left h2 {
+
+            font-size: 21px;
+        }
+
+
+        .menu-button {
+
+            display: none;
+
+            border: none;
+
+            background: #111827;
+
+            color: white;
+
+            width: 40px;
+
+            height: 40px;
+
+            border-radius: 7px;
+
+            cursor: pointer;
+
+            font-size: 20px;
+        }
+
+
+        .user-info {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 12px;
+
+            font-size: 14px;
+
+            font-weight: 600;
+        }
+
+
+        .avatar {
+
+            width: 42px;
+
+            height: 42px;
+
+            border-radius: 50%;
+
+            background: #2563eb;
+
+            color: white;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            font-weight: bold;
+
+            font-size: 16px;
+        }
+
+
+        /* =====================================================
+           PAGE CONTAINER
+        ===================================================== */
+
+        .container {
+
+            max-width: 1450px;
+
+            margin: auto;
+
+            padding: 35px;
+        }
+
+
+        /* =====================================================
+           WELCOME
+        ===================================================== */
+
+        .welcome-section {
+
+            margin-bottom: 28px;
+        }
+
+
+        .welcome-section h1 {
+
+            font-size: 30px;
+
+            margin-bottom: 8px;
+        }
+
+
+        .welcome-section p {
+
+            color: #6b7280;
+
+            font-size: 15px;
+        }
+
+
+        /* =====================================================
+           DJANGO MESSAGES
+        ===================================================== */
+
+        .messages {
+
+            margin-bottom: 25px;
+        }
+
+
+        .message {
+
+            padding: 14px 17px;
+
+            border-radius: 8px;
+
+            margin-bottom: 10px;
+
+            font-size: 14px;
+
+            border: 1px solid transparent;
+        }
+
+
+        .message.success {
+
+            background: #ecfdf5;
+
+            color: #065f46;
+
+            border-color: #a7f3d0;
+        }
+
+
+        .message.error {
+
+            background: #fef2f2;
+
+            color: #991b1b;
+
+            border-color: #fecaca;
+        }
+
+
+        .message.warning {
+
+            background: #fffbeb;
+
+            color: #92400e;
+
+            border-color: #fde68a;
+        }
+
+
+        .message.info {
+
+            background: #eff6ff;
+
+            color: #1e40af;
+
+            border-color: #bfdbfe;
+        }
+
+
+        /* =====================================================
+           STAT CARDS
+        ===================================================== */
+
+        .stats-grid {
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(4, minmax(0, 1fr));
+
+            gap: 18px;
+
+            margin-bottom: 30px;
+        }
+
+
+        .stat-card {
+
+            background: white;
+
+            border: 1px solid #e5e7eb;
+
+            border-radius: 13px;
+
+            padding: 22px;
+
+            box-shadow:
+                0 3px 10px rgba(0, 0, 0, 0.04);
+        }
+
+
+        .stat-card-top {
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            margin-bottom: 15px;
+        }
+
+
+        .stat-icon {
+
+            width: 44px;
+
+            height: 44px;
+
+            border-radius: 9px;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            background: #eff6ff;
+
+            font-size: 21px;
+        }
+
+
+        .stat-card h3 {
+
+            font-size: 29px;
+
+            margin-bottom: 5px;
+        }
+
+
+        .stat-card p {
+
+            color: #6b7280;
+
+            font-size: 13px;
+        }
+
+
+        /* =====================================================
+           AI SEARCH
+        ===================================================== */
+
+        .search-box {
+
+            background: white;
+
+            border: 1px solid #e5e7eb;
+
+            border-radius: 14px;
+
+            padding: 26px;
+
+            margin-bottom: 30px;
+
+            box-shadow:
+                0 3px 10px rgba(0, 0, 0, 0.04);
+        }
+
+
+        .search-header {
+
+            margin-bottom: 20px;
+        }
+
+
+        .search-header h2 {
+
+            font-size: 22px;
+
+            margin-bottom: 7px;
+        }
+
+
+        .search-header p {
+
+            color: #6b7280;
+
+            font-size: 14px;
+
+            line-height: 1.6;
+        }
+
+
+        .search-fields {
+
+            display: grid;
+
+            grid-template-columns:
+                1fr 1fr auto;
+
+            gap: 12px;
+        }
+
+
+        .search-fields input {
+
+            width: 100%;
+
+            padding: 13px 15px;
+
+            border: 1px solid #d1d5db;
+
+            border-radius: 8px;
+
+            outline: none;
+
+            font-size: 14px;
+        }
+
+
+        .search-fields input:focus {
+
+            border-color: #2563eb;
+
+            box-shadow:
+                0 0 0 3px rgba(
+                    37,
+                    99,
+                    235,
+                    0.1
+                );
+        }
+
+
+        .search-button {
+
+            border: none;
+
+            background: #2563eb;
+
+            color: white;
+
+            padding: 13px 21px;
+
+            border-radius: 8px;
+
+            cursor: pointer;
+
+            font-weight: 600;
+
+            white-space: nowrap;
+
+            transition: 0.2s;
+        }
+
+
+        .search-button:hover {
+
+            background: #1d4ed8;
+        }
+
+
+        /* =====================================================
+           SECTION
+        ===================================================== */
+
+        .section {
+
+            margin-bottom: 32px;
+        }
+
+
+        .section-header {
+
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: center;
+
+            margin-bottom: 18px;
+        }
+
+
+        .section-title h2 {
+
+            font-size: 22px;
+
+            margin-bottom: 5px;
+        }
+
+
+        .section-title p {
+
+            color: #6b7280;
+
+            font-size: 14px;
+        }
+
+
+        .view-all {
+
+            color: #2563eb;
+
+            font-size: 14px;
+
+            font-weight: 600;
+        }
+
+
+        .view-all:hover {
+
+            text-decoration: underline;
+        }
+
+
+        /* =====================================================
+           RECOMMENDATIONS
+        ===================================================== */
+
+        .recommendation-grid {
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(3, minmax(0, 1fr));
+
+            gap: 18px;
+        }
+
+
+        .recommendation-card {
+
+            background: white;
+
+            border: 1px solid #e5e7eb;
+
+            border-radius: 13px;
+
+            padding: 21px;
+
+            transition: 0.2s;
+        }
+
+
+        .recommendation-card:hover {
+
+            transform: translateY(-3px);
+
+            box-shadow:
+                0 8px 20px rgba(
+                    0,
+                    0,
+                    0,
+                    0.07
+                );
+        }
+
+
+        .recommendation-top {
+
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: flex-start;
+
+            gap: 12px;
+
+            margin-bottom: 17px;
+        }
+
+
+        .recommendation-top h3 {
+
+            font-size: 17px;
+
+            line-height: 1.4;
+
+            margin-bottom: 5px;
+        }
+
+
+        .company-name {
+
+            color: #6b7280;
+
+            font-size: 13px;
+        }
+
+
+        .score {
+
+            min-width: 62px;
+
+            height: 62px;
+
+            border-radius: 50%;
+
+            background: #2563eb;
+
+            color: white;
+
+            display: flex;
+
+            flex-direction: column;
+
+            align-items: center;
+
+            justify-content: center;
+
+            font-size: 17px;
+
+            font-weight: bold;
+
+            flex-shrink: 0;
+        }
+
+
+        .score small {
+
+            font-size: 9px;
+
+            font-weight: normal;
+
+            margin-top: 2px;
+        }
+
+
+        .job-meta {
+
+            display: flex;
+
+            flex-direction: column;
+
+            gap: 8px;
+
+            color: #6b7280;
+
+            font-size: 13px;
+
+            margin-bottom: 18px;
+        }
+
+
+        .score-details {
+
+            display: grid;
+
+            grid-template-columns: 1fr 1fr;
+
+            gap: 8px;
+
+            margin-bottom: 18px;
+        }
+
+
+        .score-item {
+
+            background: #f8fafc;
+
+            border: 1px solid #e5e7eb;
+
+            padding: 9px;
+
+            border-radius: 7px;
+
+            font-size: 11px;
+
+            color: #6b7280;
+        }
+
+
+        .score-item strong {
+
+            display: block;
+
+            color: #2563eb;
+
+            font-size: 13px;
+
+            margin-top: 3px;
+        }
+
+
+        .view-job {
+
+            display: block;
+
+            text-align: center;
+
+            background: #111827;
+
+            color: white;
+
+            padding: 10px;
+
+            border-radius: 7px;
+
+            font-size: 13px;
+
+            font-weight: 600;
+
+            transition: 0.2s;
+        }
+
+
+        .view-job:hover {
+
+            background: #1f2937;
+        }
+
+
+        /* =====================================================
+           PROFILE + RESUME GRID
+        ===================================================== */
+
+        .two-column {
+
+            display: grid;
+
+            grid-template-columns:
+                1fr 1fr;
+
+            gap: 20px;
+
+            margin-bottom: 30px;
+        }
+
+
+        .panel {
+
+            background: white;
+
+            border: 1px solid #e5e7eb;
+
+            border-radius: 13px;
+
+            padding: 23px;
+        }
+
+
+        .panel-header {
+
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: center;
+
+            margin-bottom: 20px;
+        }
+
+
+        .panel-header h2 {
+
+            font-size: 19px;
+        }
+
+
+        .panel-header a {
+
+            color: #2563eb;
+
+            font-size: 13px;
+
+            font-weight: 600;
+        }
+
+
+        /* =====================================================
+           PROFILE COMPLETION
+        ===================================================== */
+
+        .completion-number {
+
+            font-size: 30px;
+
+            font-weight: bold;
+
+            margin-bottom: 12px;
+        }
+
+
+        .progress-container {
+
+            width: 100%;
+
+            height: 10px;
+
+            background: #e5e7eb;
+
+            border-radius: 20px;
+
+            overflow: hidden;
+
+            margin-bottom: 10px;
+        }
+
+
+        .progress-bar {
+
+            height: 100%;
+
+            background: #2563eb;
+
+            border-radius: 20px;
+
+            transition: width 0.4s ease;
+        }
+
+
+        .completion-text {
+
+            color: #6b7280;
+
+            font-size: 13px;
+
+            line-height: 1.5;
+        }
+
+
+        /* =====================================================
+           RESUMES
+        ===================================================== */
+
+        .resume-list {
+
+            display: flex;
+
+            flex-direction: column;
+
+            gap: 11px;
+        }
+
+
+        .resume-item {
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            gap: 12px;
+
+            padding: 13px;
+
+            background: #f8fafc;
+
+            border: 1px solid #e5e7eb;
+
+            border-radius: 8px;
+        }
+
+
+        .resume-info {
+
+            min-width: 0;
+        }
+
+
+        .resume-info strong {
+
+            display: block;
+
+            font-size: 14px;
+
+            margin-bottom: 4px;
+
+            overflow: hidden;
+
+            text-overflow: ellipsis;
+
+            white-space: nowrap;
+        }
+
+
+        .resume-info span {
+
+            color: #6b7280;
+
+            font-size: 11px;
+        }
+
+
+        .resume-badge {
+
+            background: #dbeafe;
+
+            color: #1d4ed8;
+
+            padding: 5px 8px;
+
+            border-radius: 5px;
+
+            font-size: 10px;
+
+            white-space: nowrap;
+        }
+
+
+        .upload-button {
+
+            display: inline-block;
+
+            margin-top: 14px;
+
+            background: #2563eb;
+
+            color: white;
+
+            padding: 9px 14px;
+
+            border-radius: 7px;
+
+            font-size: 12px;
+
+            font-weight: 600;
+        }
+
+
+        /* =====================================================
+           APPLICATIONS
+        ===================================================== */
+
+        .application-list {
+
+            display: flex;
+
+            flex-direction: column;
+
+            gap: 10px;
+        }
+
+
+        .application-item {
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            gap: 15px;
+
+            padding: 13px;
+
+            border: 1px solid #e5e7eb;
+
+            border-radius: 8px;
+
+            background: #f8fafc;
+        }
+
+
+        .application-info strong {
+
+            display: block;
+
+            font-size: 14px;
+
+            margin-bottom: 4px;
+        }
+
+
+        .application-info span {
+
+            color: #6b7280;
+
+            font-size: 12px;
+        }
+
+
+        .status-badge {
+
+            padding: 6px 9px;
+
+            background: #e0e7ff;
+
+            color: #3730a3;
+
+            border-radius: 6px;
+
+            font-size: 10px;
+
+            font-weight: 600;
+
+            white-space: nowrap;
+        }
+
+
+        /* =====================================================
+           EMPTY STATE
+        ===================================================== */
+
+        .empty-state {
+
+            background: white;
+
+            border: 1px solid #e5e7eb;
+
+            border-radius: 13px;
+
+            padding: 38px 25px;
+
+            text-align: center;
+        }
+
+
+        .empty-state h3 {
+
+            font-size: 18px;
+
+            margin-bottom: 8px;
+        }
+
+
+        .empty-state p {
+
+            color: #6b7280;
+
+            font-size: 13px;
+
+            line-height: 1.6;
+
+            margin-bottom: 18px;
+        }
+
+
+        .primary-button {
+
+            display: inline-block;
+
+            background: #2563eb;
+
+            color: white;
+
+            padding: 10px 17px;
+
+            border-radius: 7px;
+
+            font-size: 13px;
+
+            font-weight: 600;
+        }
+
+
+        /* =====================================================
+           RESPONSIVE
+        ===================================================== */
+
+        @media (max-width: 1200px) {
+
+            .stats-grid {
+
+                grid-template-columns:
+                    repeat(2, 1fr);
+            }
+
+
+            .recommendation-grid {
+
+                grid-template-columns:
+                    repeat(2, 1fr);
+            }
+
+        }
+
+
+        @media (max-width: 900px) {
+
+            .sidebar {
+
+                transform: translateX(-100%);
+            }
+
+
+            .sidebar.show {
+
+                transform: translateX(0);
+            }
+
+
+            .main-content {
+
+                margin-left: 0;
+            }
+
+
+            .menu-button {
+
+                display: block;
+            }
+
+
+            .search-fields {
+
+                grid-template-columns: 1fr;
+            }
+
+
+            .two-column {
+
+                grid-template-columns: 1fr;
+            }
+
+        }
+
+
+        @media (max-width: 650px) {
+
+            .container {
+
+                padding: 22px 16px;
+            }
+
+
+            .topbar {
+
+                padding: 0 16px;
+            }
+
+
+            .topbar-left h2 {
+
+                display: none;
+            }
+
+
+            .stats-grid {
+
+                grid-template-columns: 1fr;
+            }
+
+
+            .recommendation-grid {
+
+                grid-template-columns: 1fr;
+            }
+
+
+            .welcome-section h1 {
+
+                font-size: 25px;
+            }
+
+
+            .section-header {
+
+                align-items: flex-start;
+
+                gap: 10px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+    <!-- =====================================================
+         SIDEBAR
+    ====================================================== -->
+
+    <aside
+        class="sidebar"
+        id="sidebar"
+    >
+
+        <div class="logo">
+
+            🤖 Job<span>AgentAI</span>
+
+        </div>
+
+
+        <ul class="nav-links">
+
+            <li>
+
+                <a
+                    href="{% url 'dashboard' %}"
+                    class="active"
+                >
+                    🏠
+                    <span>Dashboard</span>
+                </a>
+
+            </li>
+
+
+            <li>
+
+                <a href="{% url 'job_list' %}">
+                    💼
+                    <span>All Jobs</span>
+                </a>
+
+            </li>
+
+
+            <li>
+
+                <a href="{% url 'recommended_jobs' %}">
+                    ⭐
+                    <span>Recommended Jobs</span>
+                </a>
+
+            </li>
+
+
+            <div class="sidebar-divider"></div>
+
+
+            <li>
+
+                <a href="{% url 'profile' %}">
+                    👤
+                    <span>My Profile</span>
+                </a>
+
+            </li>
+
+
+            <li>
+
+                <a href="{% url 'resume_list' %}">
+                    📄
+                    <span>My Resumes</span>
+                </a>
+
+            </li>
+
+
+            {% if applications_url %}
+
+                <li>
+
+                    <a href="{{ applications_url }}">
+                        📋
+                        <span>Applications</span>
+                    </a>
+
+                </li>
+
+            {% endif %}
+
+
+            <div class="sidebar-divider"></div>
+
+
+            <li>
+
+                <a href="{% url 'logout' %}">
+                    🚪
+                    <span>Logout</span>
+                </a>
+
+            </li>
+
+        </ul>
+
+    </aside>
+
+
+
+    <!-- =====================================================
+         MAIN
+    ====================================================== -->
+
+    <main class="main-content">
+
+
+        <!-- =================================================
+             TOPBAR
+        ================================================== -->
+
+        <header class="topbar">
+
+            <div class="topbar-left">
+
+                <button
+                    class="menu-button"
+                    onclick="toggleSidebar()"
+                    type="button"
+                >
+                    ☰
+                </button>
+
+
+                <h2>
+                    JobAgentAI Dashboard
+                </h2>
+
+            </div>
+
+
+            <div class="user-info">
+
+                <span>
+                    Hello,
+                    {{ request.user.username }}
+                </span>
+
+
+                <div class="avatar">
+
+                    {{ request.user.username|first|upper }}
+
+                </div>
+
+            </div>
+
+        </header>
+
+
+
+        <!-- =================================================
+             PAGE CONTENT
+        ================================================== -->
+
+        <div class="container">
+
+
+            <!-- =============================================
+                 WELCOME
+            ============================================== -->
+
+            <section class="welcome-section">
+
+                <h1>
+                    Welcome back,
+                    {{ request.user.username }} 👋
+                </h1>
+
+                <p>
+                    Search jobs, analyze your matches and
+                    manage your applications with JobAgentAI.
+                </p>
+
+            </section>
+
+
+
+            <!-- =============================================
+                 DJANGO MESSAGES
+            ============================================== -->
+
+            {% if messages %}
+
+                <div class="messages">
+
+                    {% for message in messages %}
+
+                        <div
+                            class="message
+                            {% if message.tags %}
+                                {{ message.tags }}
+                            {% endif %}"
+                        >
+
+                            {{ message }}
+
+                        </div>
+
+                    {% endfor %}
+
+                </div>
+
+            {% endif %}
+
+
+
+            <!-- =============================================
+                 STAT CARDS
+            ============================================== -->
+
+            <section class="stats-grid">
+
+
+                <div class="stat-card">
+
+                    <div class="stat-card-top">
+
+                        <div class="stat-icon">
+                            💼
+                        </div>
+
+                    </div>
+
+                    <h3>
+                        {{ total_jobs|default:"0" }}
+                    </h3>
+
+                    <p>
+                        Active Jobs
+                    </p>
+
+                </div>
+
+
+
+                <div class="stat-card">
+
+                    <div class="stat-card-top">
+
+                        <div class="stat-icon">
+                            ⭐
+                        </div>
+
+                    </div>
+
+                    <h3>
+                        {{ recommended_count|default:"0" }}
+                    </h3>
+
+                    <p>
+                        AI Recommendations
+                    </p>
+
+                </div>
+
+
+
+                <div class="stat-card">
+
+                    <div class="stat-card-top">
+
+                        <div class="stat-icon">
+                            📋
+                        </div>
+
+                    </div>
+
+                    <h3>
+                        {{ application_count|default:"0" }}
+                    </h3>
+
+                    <p>
+                        Applications
+                    </p>
+
+                </div>
+
+
+
+                <div class="stat-card">
+
+                    <div class="stat-card-top">
+
+                        <div class="stat-icon">
+                            👤
+                        </div>
+
+                    </div>
+
+                    <h3>
+                        {{ profile_completion|default:"0" }}%
+                    </h3>
+
+                    <p>
+                        Profile Complete
+                    </p>
+
+                </div>
+
+
+            </section>
+
+
+
+            <!-- =============================================
+                 AI JOB SEARCH
+            ============================================== -->
+
+            <section class="search-box">
+
+
+                <div class="search-header">
+
+                    <h2>
+                        🤖 AI Job Search
+                    </h2>
+
+                    <p>
+                        Search jobs by role and location.
+                        If you leave these fields empty,
+                        JobAgentAI will use your profile
+                        preferences automatically.
+                    </p>
+
+                </div>
+
+
+                <form
+                    method="POST"
+                    action="{% url 'discover_jobs' %}"
+                >
+
+                    {% csrf_token %}
+
+
+                    <div class="search-fields">
+
+
+                        <input
+                            type="text"
+                            name="keyword"
+                            placeholder="Python Developer, AI Engineer, Data Scientist"
+                            value="{{ request.GET.keyword|default:'' }}"
+                        >
+
+
+                        <input
+                            type="text"
+                            name="location"
+                            placeholder="Bangalore, Chennai, Remote"
+                            value="{{ request.GET.location|default:'' }}"
+                        >
+
+
+                        <button
+                            type="submit"
+                            class="search-button"
+                        >
+                            🔍 Search New Jobs
+                        </button>
+
+
+                    </div>
+
+                </form>
+
+            </section>
+
+
+
+            <!-- =============================================
+                 RECOMMENDED JOBS
+            ============================================== -->
+
+            <section class="section">
+
+
+                <div class="section-header">
+
+                    <div class="section-title">
+
+                        <h2>
+                            ⭐ Recommended Jobs
+                        </h2>
+
+                        <p>
+                            Jobs matched with your profile
+                            using the AI Matching Agent.
+                        </p>
+
+                    </div>
+
+
+                    <a
+                        href="{% url 'recommended_jobs' %}"
+                        class="view-all"
+                    >
+                        View All →
+                    </a>
+
+                </div>
+
+
+
+                {% if top_recommendations %}
+
+
+                    <div class="recommendation-grid">
+
+
+                        {% for match in top_recommendations %}
+
+
+                            <div class="recommendation-card">
+
+
+                                <div class="recommendation-top">
+
+
+                                    <div>
+
+                                        <h3>
+                                            {{ match.job.title }}
+                                        </h3>
+
+                                        <div class="company-name">
+                                            {{ match.job.company_name }}
+                                        </div>
+
+                                    </div>
+
+
+                                    <div class="score">
+
+                                        {{ match.overall_score|floatformat:0 }}%
+
+                                        <small>
+                                            Match
+                                        </small>
+
+                                    </div>
+
+
+                                </div>
+
+
+
+                                <div class="job-meta">
+
+                                    <span>
+                                        📍
+                                        {{ match.job.location|default:"Location not specified" }}
+                                    </span>
+
+
+                                    <span>
+                                        💼
+                                        {{ match.job.get_job_type_display }}
+                                    </span>
+
+
+                                    {% if match.job.salary %}
+
+                                        <span>
+                                            💰
+                                            {{ match.job.salary }}
+                                        </span>
+
+                                    {% endif %}
+
+                                </div>
+
+
+
+                                <div class="score-details">
+
+
+                                    <div class="score-item">
+
+                                        Skills
+
+                                        <strong>
+                                            {{ match.skills_score|floatformat:0 }}%
+                                        </strong>
+
+                                    </div>
+
+
+                                    <div class="score-item">
+
+                                        Experience
+
+                                        <strong>
+                                            {{ match.experience_score|floatformat:0 }}%
+                                        </strong>
+
+                                    </div>
+
+
+                                    <div class="score-item">
+
+                                        Education
+
+                                        <strong>
+                                            {{ match.education_score|floatformat:0 }}%
+                                        </strong>
+
+                                    </div>
+
+
+                                    <div class="score-item">
+
+                                        Location
+
+                                        <strong>
+                                            {{ match.location_score|floatformat:0 }}%
+                                        </strong>
+
+                                    </div>
+
+
+                                </div>
+
+
+
+                                <a
+                                    href="{% url 'job_detail' match.job.id %}"
+                                    class="view-job"
+                                >
+                                    View Job →
+                                </a>
+
+
+                            </div>
+
+
+                        {% endfor %}
+
+
+                    </div>
+
+
+                {% else %}
+
+                    {% if latest_jobs %}
+
+                        <div class="recommendation-grid">
+
+                            {% for job in latest_jobs %}
+
+                                <div class="recommendation-card">
+
+                                    <div class="recommendation-top">
+
+                                        <div>
+
+                                            <h3>
+                                                {{ job.title }}
+                                            </h3>
+
+                                            <div class="company-name">
+                                                {{ job.company_name }}
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+
+                                    <div class="job-meta">
+
+                                        <span>
+                                            📍
+                                            {{ job.location|default:"Location not specified" }}
+                                        </span>
+
+                                        <span>
+                                            💼
+                                            {{ job.get_job_type_display }}
+                                        </span>
+
+                                    </div>
+
+                                    <p>
+                                        {{ job.description|striptags|truncatewords:24 }}
+                                    </p>
+
+                                    <a
+                                        href="{% url 'job_detail' job.id %}"
+                                        class="view-job"
+                                    >
+                                        View Job →
+                                    </a>
+
+                                </div>
+
+                            {% endfor %}
+
+                        </div>
+
+                    {% else %}
+
+                        <div class="empty-state">
+
+                            <h3>
+                                No jobs available yet
+                            </h3>
+
+                            <p>
+                                Search new jobs or configure a job source
+                                to populate the job list.
+                            </p>
+
+                            <a
+                                href="{% url 'job_list' %}"
+                                class="primary-button"
+                            >
+                                View All Jobs
+                            </a>
+
+                            <a
+                                href="{{ naukri_search_url }}"
+                                class="primary-button"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                            >
+                                Search on Naukri ↗
+                            </a>
+
+                        </div>
+
+                    {% endif %}
+
+
+                {% endif %}
+
+
+            </section>
+
+
+
+            <!-- =============================================
+                 PROFILE + RESUME
+            ============================================== -->
+
+            <section class="two-column">
+
+
+                <!-- PROFILE -->
+
+                <div class="panel">
+
+
+                    <div class="panel-header">
+
+                        <h2>
+                            👤 Profile
+                        </h2>
+
+                        <a href="{% url 'profile' %}">
+                            Edit Profile →
+                        </a>
+
+                    </div>
+
+
+                    <div class="completion-number">
+
+                        {{ profile_completion|default:"0" }}%
+
+                    </div>
+
+
+                    <div class="progress-container">
+
+                        <div
+                            class="progress-bar"
+                            style="width: {{ profile_completion|default:0 }}%;"
+                        ></div>
+
+                    </div>
+
+
+                    <p class="completion-text">
+
+                        Complete your profile with your skills,
+                        preferred roles, locations, education
+                        and experience to improve job matching.
+
+                    </p>
+
+
+                </div>
+
+
+
+                <!-- RESUMES -->
+
+                <div class="panel">
+
+
+                    <div class="panel-header">
+
+                        <h2>
+                            📄 My Resumes
+                        </h2>
+
+                        <a href="{% url 'resume_list' %}">
+                            View All →
+                        </a>
+
+                    </div>
+
+
+                    {% if resumes %}
+
+
+                        <div class="resume-list">
+
+
+                            {% for resume in resumes|slice:":4" %}
+
+
+                                <div class="resume-item">
+
+
+                                    <div class="resume-info">
+
+                                        <strong>
+                                            {{ resume.title }}
+                                        </strong>
+
+                                        <span>
+                                            Uploaded:
+                                            {{ resume.uploaded_at|date:"d M Y" }}
+                                        </span>
+
+                                    </div>
+
+
+                                    {% if resume.is_primary %}
+
+                                        <span class="resume-badge">
+                                            Primary
+                                        </span>
+
+                                    {% endif %}
+
+
+                                </div>
+
+
+                            {% endfor %}
+
+
+                        </div>
+
+
+                    {% else %}
+
+
+                        <p class="completion-text">
+
+                            You have not uploaded a resume yet.
+
+                        </p>
+
+
+                    {% endif %}
+
+
+                    <a
+                        href="{% url 'resume_upload' %}"
+                        class="upload-button"
+                    >
+                        + Upload Resume
+                    </a>
+
+
+                </div>
+
+
+            </section>
+
+
+
+            <!-- =============================================
+                 APPLICATIONS
+            ============================================== -->
+
+            <section class="section">
+
+
+                <div class="section-header">
+
+
+                    <div class="section-title">
+
+                        <h2>
+                            📋 Recent Applications
+                        </h2>
+
+                        <p>
+                            Track your recent job applications.
+                        </p>
+
+                    </div>
+
+
+                    {% if applications_url %}
+
+                        <a
+                            href="{{ applications_url }}"
+                            class="view-all"
+                        >
+                            View All →
+                        </a>
+
+                    {% endif %}
+
+
+                </div>
+
+
+
+                {% if applications %}
+
+
+                    <div class="panel">
+
+
+                        <div class="application-list">
+
+
+                            {% for application in applications|slice:":5" %}
+
+
+                                <div class="application-item">
+
+
+                                    <div class="application-info">
+
+                                        <strong>
+                                            {{ application.job.title }}
+                                        </strong>
+
+                                        <span>
+                                            {{ application.job.company_name }}
+                                        </span>
+
+                                    </div>
+
+
+                                    <span class="status-badge">
+
+                                        {{ application.get_status_display }}
+
+                                    </span>
+
+
+                                </div>
+
+
+                            {% endfor %}
+
+
+                        </div>
+
+
+                    </div>
+
+
+                {% else %}
+
+
+                    <div class="empty-state">
+
+                        <h3>
+                            No applications yet
+                        </h3>
+
+                        <p>
+                            When you save or apply for jobs,
+                            your application activity will
+                            appear here.
+                        </p>
+
+
+                        <a
+                            href="{% url 'job_list' %}"
+                            class="primary-button"
+                        >
+                            Browse Jobs
+                        </a>
+
+                    </div>
+
+
+                {% endif %}
+
+
+            </section>
+
+
+        </div>
+
+    </main>
+
+
+
+    <!-- =====================================================
+         JAVASCRIPT
+    ====================================================== -->
+
+    <script>
+
+        function toggleSidebar() {
+
+            const sidebar =
+                document.getElementById("sidebar");
+
+            sidebar.classList.toggle("show");
+
+        }
+
+
+        /*
+         * Close mobile sidebar when a navigation link
+         * is clicked.
+         */
+
+        document
+            .querySelectorAll(".nav-links a")
+            .forEach(function(link) {
+
+                link.addEventListener(
+                    "click",
+                    function() {
+
+                        if (
+                            window.innerWidth <= 900
+                        ) {
+
+                            document
+                                .getElementById("sidebar")
+                                .classList.remove("show");
+
+                        }
+
+                    }
+                );
+
+            });
+
+
+    </script>
+
+
+</body>
+
+</html>

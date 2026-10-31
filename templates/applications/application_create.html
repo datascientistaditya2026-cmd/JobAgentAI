@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Start Application - JobAgentAI</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f4f6f9;
+            color: #1f2937;
+        }
+
+        .container {
+            max-width: 850px;
+            margin: 50px auto;
+            padding: 20px;
+        }
+
+        .card {
+            background: white;
+            padding: 30px;
+            border-radius: 14px;
+            border: 1px solid #e5e7eb;
+        }
+
+        h1 {
+            margin-bottom: 8px;
+        }
+
+        .company {
+            color: #6b7280;
+            margin-bottom: 25px;
+        }
+
+        .job-info {
+            background: #f8fafc;
+            padding: 18px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+        }
+
+        .job-info p {
+            margin: 8px 0;
+        }
+
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        button {
+            background: #2563eb;
+            color: white;
+            border: none;
+            padding: 12px 22px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        button:hover {
+            background: #1d4ed8;
+        }
+
+        .back {
+            display: inline-block;
+            margin-bottom: 20px;
+            color: #2563eb;
+            text-decoration: none;
+        }
+
+        .empty {
+            background: #fff7ed;
+            padding: 18px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+    <a
+        href="{% url 'job_detail' job.id %}"
+        class="back"
+    >
+        ← Back to Job
+    </a>
+
+    <div class="card">
+
+        <h1>
+            Start Application
+        </h1>
+
+        <div class="company">
+            {{ job.company_name }}
+        </div>
+
+        <div class="job-info">
+
+            <p>
+                <strong>Job:</strong>
+                {{ job.title }}
+            </p>
+
+            <p>
+                <strong>Location:</strong>
+                {{ job.location|default:"Not specified" }}
+            </p>
+
+            <p>
+                <strong>Type:</strong>
+                {{ job.get_job_type_display }}
+            </p>
+
+        </div>
+
+        {% if resumes %}
+
+            <form method="POST">
+
+                {% csrf_token %}
+
+                <label for="resume">
+                    Select Resume
+                </label>
+
+                <select
+                    name="resume"
+                    id="resume"
+                >
+
+                    <option value="">
+                        -- Select Resume --
+                    </option>
+
+                    {% for resume in resumes %}
+
+                        <option
+                            value="{{ resume.id }}"
+                        >
+                            {{ resume.title }}
+
+                            {% if resume.is_primary %}
+                                (Primary)
+                            {% endif %}
+                        </option>
+
+                    {% endfor %}
+
+                </select>
+
+                <button type="submit">
+                    Continue to Review →
+                </button>
+
+            </form>
+
+        {% else %}
+
+            <div class="empty">
+
+                <strong>
+                    No resume found.
+                </strong>
+
+                <p>
+                    Upload a resume before starting
+                    an application.
+                </p>
+
+                <a href="{% url 'resume_upload' %}">
+                    Upload Resume
+                </a>
+
+            </div>
+
+        {% endif %}
+
+    </div>
+
+</div>
+
+</body>
+
+</html>
